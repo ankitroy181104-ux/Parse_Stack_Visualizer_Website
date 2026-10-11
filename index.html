@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive LL(1) parser visualizer for compiler design students. Explore parse stack operations, grammar productions, and parse trees.">
+  <title>ParseLab — Stack & Parse Tree Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ParseLab home">
+      <span class="brand-mark"><span></span><span></span><span></span></span>
+      <span>parse<span class="brand-accent">lab</span><small>COMPILER DESIGN STUDIO</small></span>
+    </a>
+    <nav class="top-nav">
+      <a href="#workspace">Visualizer</a><a href="#grammar">Grammar</a><a href="#learn">Learn</a>
+    </nav>
+    <div class="top-actions">
+      <span class="status-dot"></span><span class="status-text">LL(1) ENGINE READY</span>
+      <button class="icon-button" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">◐</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> INTERACTIVE COMPILER LAB</div>
+        <h1>See how an expression<br><span>becomes a tree.</span></h1>
+        <p>Step inside predictive parsing. Watch the stack evolve, follow every production, and explore the parse tree as your expression is analyzed.</p>
+        <div class="hero-cta"><a class="button button-primary" href="#workspace">Launch visualizer <span>↘</span></a><a class="text-link" href="#learn">How it works <span>→</span></a></div>
+        <div class="hero-stats"><div><strong>LL(1)</strong><span>Parsing strategy</span></div><div><strong>8</strong><span>Production rules</span></div><div><strong>Live</strong><span>Step-by-step trace</span></div></div>
+      </div>
+      <div class="hero-art" aria-label="Decorative parse tree illustration">
+        <div class="art-glow"></div>
+        <div class="art-label label-top">SYNTAX TREE <span>● LIVE</span></div>
+        <svg class="hero-tree" viewBox="0 0 460 310" role="img" aria-label="Illustration of a parse tree">
+          <g class="tree-lines"><path d="M230 48 L120 105 M230 48 L340 105 M120 128 L65 185 M120 128 L175 185 M340 128 L285 185 M340 128 L395 185 M65 208 L40 258 M65 208 L90 258 M175 208 L175 258 M285 208 L285 258 M395 208 L420 258"/></g>
+          <g class="tree-node root"><rect x="196" y="22" width="68" height="38" rx="12"/><text x="230" y="46">E</text></g>
+          <g class="tree-node"><rect x="88" y="102" width="64" height="36" rx="10"/><text x="120" y="125">T</text></g>
+          <g class="tree-node accent"><rect x="308" y="102" width="64" height="36" rx="10"/><text x="340" y="125">Q</text></g>
+          <g class="tree-node"><rect x="34" y="182" width="62" height="36" rx="10"/><text x="65" y="205">F</text></g>
+          <g class="tree-node"><rect x="144" y="182" width="62" height="36" rx="10"/><text x="175" y="205">R</text></g>
+          <g class="tree-node accent"><rect x="254" y="182" width="62" height="36" rx="10"/><text x="285" y="205">+</text></g>
+          <g class="tree-node"><rect x="364" y="182" width="62" height="36" rx="10"/><text x="395" y="205">T</text></g>
+          <g class="tree-node leaf"><rect x="16" y="254" width="48" height="34" rx="9"/><text x="40" y="276">i</text></g>
+          <g class="tree-node leaf"><rect x="66" y="254" width="48" height="34" rx="9"/><text x="90" y="276">ε</text></g>
+          <g class="tree-node leaf"><rect x="151" y="254" width="48" height="34" rx="9"/><text x="175" y="276">ε</text></g>
+          <g class="tree-node leaf"><rect x="261" y="254" width="48" height="34" rx="9"/><text x="285" y="276">T</text></g>
+          <g class="tree-node leaf"><rect x="396" y="254" width="48" height="34" rx="9"/><text x="420" y="276">i</text></g>
+        </svg>
+        <div class="art-foot"><span>FIG 01</span><span>PRODUCTION → STRUCTURE</span><span>⌁</span></div>
+        <div class="floating-chip chip-one"><span class="chip-icon">↳</span><span><b>E → TQ</b><small>Production applied</small></span></div>
+        <div class="floating-chip chip-two"><span class="chip-pulse"></span><span><b>Stack updated</b><small>3 symbols pushed</small></span></div>
+      </div>
+    </section>
+
+    <section class="workspace-section" id="workspace">
+      <div class="section-heading">
+        <div><div class="eyebrow">01 / THE WORKSPACE</div><h2>Parsing, made visible.</h2></div>
+        <div class="engine-badge"><span class="status-dot"></span> Predictive parser</div>
+      </div>
+
+      <div class="workspace-grid">
+        <aside class="panel input-panel">
+          <div class="panel-heading"><div><span class="panel-index">A</span><h3>Input expression</h3></div><span class="tiny-tag">SOURCE</span></div>
+          <label class="field-label" for="expressionInput">ENTER AN EXPRESSION</label>
+          <div class="expression-field"><span class="prompt-symbol">λ</span><input id="expressionInput" value="a+b*c" spellcheck="false" autocomplete="off" aria-describedby="inputHelp"><button id="clearInput" title="Clear expression" aria-label="Clear expression">×</button></div>
+          <p class="field-help" id="inputHelp">Try identifiers, numbers, +, *, and parentheses.</p>
+          <div class="example-label">QUICK EXAMPLES</div>
+          <div class="example-chips"><button data-example="a+b*c">a + b * c</button><button data-example="(a+b)*c">(a + b) * c</button><button data-example="x+12">x + 12</button><button data-example="a+*b">a + * b <span class="bad-chip">invalid</span></button></div>
+          <button class="button button-primary full-width" id="parseButton">Parse expression <span>↗</span></button>
+          <div id="validationMessage" class="validation-message" role="status"></div>
+          <div class="mini-divider"></div>
+          <div class="panel-heading sub-heading"><div><span class="panel-index">B</span><h3>Grammar rules</h3></div><a href="#grammar" class="small-link">View all ↗</a></div>
+          <div class="mini-grammar">
+            <div><span>E</span><b>→</b><code>TQ</code></div>
+            <div><span>Q</span><b>→</b><code>+TQ <em>| ε</em></code></div>
+            <div><span>T</span><b>→</b><code>FR</code></div>
+            <div><span>R</span><b>→</b><code>*FR <em>| ε</em></code></div>
+            <div><span>F</span><b>→</b><code>(E) <em>| i</em></code></div>
+          </div>
+          <div class="grammar-note"><span>i</span> represents an identifier or numeric literal.</div>
+        </aside>
+
+        <div class="panel trace-panel">
+          <div class="panel-heading"><div><span class="panel-index">C</span><h3>Parse stack trace</h3></div><span class="live-pill"><span></span> LIVE TRACE</span></div>
+          <div class="trace-summary"><div><span class="summary-label">CURRENT STEP</span><strong id="stepCount">— <small>/ —</small></strong></div><div><span class="summary-label">PARSER STATUS</span><strong class="status-waiting" id="parseStatus">Ready to parse</strong></div><div><span class="summary-label">INPUT TOKENS</span><strong id="tokenCount">5</strong></div></div>
+          <div class="trace-table-wrap">
+            <table class="trace-table"><thead><tr><th>STEP</th><th>STACK <small>(TOP →)</small></th><th>INPUT</th><th>ACTION</th></tr></thead><tbody id="traceBody"><tr class="empty-row"><td colspan="4"><span class="empty-icon">⌁</span><b>Your trace appears here</b><small>Enter an expression and press Parse.</small></td></tr></tbody></table>
+          </div>
+          <div class="trace-controls">
+            <button class="control-button" id="resetButton" title="Reset trace">↺ <span>Reset</span></button>
+            <div class="step-controls"><button class="control-button" id="prevStep" disabled title="Previous step">←</button><button class="button button-dark" id="nextStep" disabled>Next step <span>→</span></button><button class="control-button" id="playButton" disabled title="Play all steps">▶</button></div>
+            <span class="step-hint" id="stepHint">Parse to begin stepping</span>
+          </div>
+          <div class="progress-track"><div id="progressBar"></div></div>
+        </div>
+      </div>
+
+      <div class="panel tree-panel">
+        <div class="panel-heading"><div><span class="panel-index">D</span><h3>Parse tree explorer</h3></div><div class="tree-tools"><span class="tiny-tag" id="treeNodeCount">NO TREE YET</span><button class="control-button compact" id="expandTree" disabled>Expand ↗</button></div></div>
+        <div id="treeCanvas" class="tree-canvas"><div class="tree-empty"><div class="empty-tree-icon">⌘</div><b>Waiting for a valid expression</b><span>Run the parser to build a syntax tree from the grammar.</span></div></div>
+        <div class="tree-legend"><span><i class="legend-nonterminal"></i> Non-terminal</span><span><i class="legend-terminal"></i> Terminal</span><span><i class="legend-epsilon"></i> ε Empty production</span><span class="tree-zoom">Scroll to explore · Drag is not required</span></div>
+      </div>
+    </section>
+
+    <section class="concepts-section" id="learn">
+      <div class="section-heading"><div><div class="eyebrow">02 / THE CONCEPTS</div><h2>Three ideas. One parser.</h2></div><p>Understand what the visualizer is doing at every step.</p></div>
+      <div class="concept-grid">
+        <article class="concept-card"><div class="concept-number">01</div><div class="concept-icon">▤</div><h3>The parsing stack</h3><p>A last-in, first-out structure that tracks grammar symbols still to be processed. The top symbol is examined at each step.</p><div class="concept-meta">LIFO · PUSH · POP</div></article>
+        <article class="concept-card"><div class="concept-number">02</div><div class="concept-icon">⤷</div><h3>Production rules</h3><p>The parser expands a non-terminal using the next input token, called the lookahead. Right-hand-side symbols are pushed in reverse order.</p><div class="concept-meta">LL(1) · LOOKAHEAD</div></article>
+        <article class="concept-card"><div class="concept-number">03</div><div class="concept-icon">⑂</div><h3>The parse tree</h3><p>A tree showing how grammar productions derive the expression. Non-terminals branch into their production symbols.</p><div class="concept-meta">ROOT · CHILDREN · LEAVES</div></article>
+      </div>
+    </section>
+
+    <section class="grammar-section" id="grammar">
+      <div class="grammar-card">
+        <div class="grammar-copy"><div class="eyebrow">03 / THE FORMAL GRAMMAR</div><h2>Built on a simple<br>expression grammar.</h2><p>This grammar is suitable for LL(1) predictive parsing. It separates expressions, terms, and factors to encode operator precedence.</p><div class="precedence-note"><span class="precedence-symbol">×</span><span><b>Precedence is built in</b><small>Multiplication binds tighter than addition; parentheses can override it.</small></span></div></div>
+        <div class="grammar-code"><div class="code-window-head"><span class="window-dots"><i></i><i></i><i></i></span><span>expression_grammar.cfg</span><button id="copyGrammar">Copy ↗</button></div><pre><code><span class="code-comment">// Start symbol: E</span>
+<span class="code-nonterm">E</span> <span class="code-arrow">→</span> <span class="code-term">TQ</span>
+<span class="code-nonterm">Q</span> <span class="code-arrow">→</span> <span class="code-term">+TQ</span> <span class="code-comment">| ε</span>
+<span class="code-nonterm">T</span> <span class="code-arrow">→</span> <span class="code-term">FR</span>
+<span class="code-nonterm">R</span> <span class="code-arrow">→</span> <span class="code-term">*FR</span> <span class="code-comment">| ε</span>
+<span class="code-nonterm">F</span> <span class="code-arrow">→</span> <span class="code-term">(E)</span> <span class="code-comment">| i</span>
+
+<span class="code-comment">// i = identifier or number</span>
+<span class="code-comment">// ε = empty production</span></code></pre></div>
+      </div>
+    </section>
+    <section class="footer-cta"><div><div class="eyebrow">KEEP EXPERIMENTING</div><h2>Make the invisible, visible.</h2><p>Try a new expression. Step through the trace. Connect the grammar to the tree.</p></div><a href="#workspace" class="button button-primary">Back to visualizer ↑</a></section>
+  </main>
+  <footer><a class="footer-brand" href="#">parse<span>lab</span></a><span>COMPILER DESIGN PBL · LEARN BY VISUALIZING</span><span>Made for curious minds <b>✳</b></span></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="js/parser.js"></script>
+  <script src="js/tree.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
